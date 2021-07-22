@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import classes from './Checkout.module.css'
 
 const isEmpty = (value) => value.trim().length === ''
-const isNotFiveChars = (value) => value.trim().length !== 5
+const isNotFiveChars = (value) => value.trim().length > 3 && value < 10
 
 const Checkout = (props) => {
   const [formInputValidty, setFormInputValidty] = useState({
@@ -25,10 +25,10 @@ const Checkout = (props) => {
     const enteredEircode = postalCodeInputRef.current.value
     const enteredCity = cityInputRef.current.value
 
-    const enteredNameIsValid = isEmpty(enteredName)
-    const enteredStreetIsValid = isEmpty(enteredStreet)
-    const enteredCityIsValid = isEmpty(enteredCity)
-    const enteredEircodeIsValid = isEmpty(enteredEircode)
+    const enteredNameIsValid = !isEmpty(enteredName)
+    const enteredStreetIsValid = !isEmpty(enteredStreet)
+    const enteredCityIsValid = !isEmpty(enteredCity)
+    const enteredEircodeIsValid = !isNotFiveChars(enteredEircode)
 
     setFormInputValidty({
       name: enteredNameIsValid,
@@ -47,6 +47,12 @@ const Checkout = (props) => {
       return
     }
     // Submit the cart data
+    props.onConfirm({
+      name: enteredName,
+      street: enteredStreet,
+      city: enteredCity,
+      postalCode: enteredEircode,
+    })
   }
 
   const nameControlClasses = `${classes.control}${
@@ -63,19 +69,19 @@ const Checkout = (props) => {
       <div className={classes.control}>
         <label htmlFor="street">Street</label>
         <input type="text" id="street" ref={streetInputRef} />
-        {!formInputValidty.street && <p>please enter a valid name</p>}
+        {!formInputValidty.street && <p>please enter a valid street</p>}
       </div>
 
       <div className={classes.control}>
         <label htmlFor="eircode">Eircode</label>
         <input type="text" id="eircode" ref={postalCodeInputRef} />
-        {!formInputValidty.eircode && <p>please enter a valid name</p>}
+        {!formInputValidty.eircode && <p>please enter a valid Eircode</p>}
       </div>
 
       <div className={classes.control}>
         <label htmlFor="cty">City</label>
         <input type="text" id="city" ref={cityInputRef} />
-        {!formInputValidty.city && <p>please enter a valid name</p>}
+        {!formInputValidty.city && <p>please enter a valid City</p>}
       </div>
 
       <div className={classes.actions}>
